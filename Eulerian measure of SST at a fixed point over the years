@@ -1,0 +1,33 @@
+# Gulf of Guinea Point coordinates
+gog_latitude = 4.000
+gog_longitude = 2.000
+
+# Find the nearest latitude and longitude in the dataset
+nearest_latitude = data.latitude.sel(latitude=gog_latitude, method="nearest").values
+nearest_longitude = data.longitude.sel(longitude=gog_longitude, method="nearest").values
+
+# Extracting sst data of gog for the specified years
+sst_gog = {}
+
+for year in years_of_interest:
+    # Extract data for gog for the specific year
+    yearly_data_gog = data.sel(time=data.time.dt.year == year, latitude=nearest_latitude, longitude=nearest_longitude)
+    
+    # Convert to pandas series for easier plotting
+    sst_gog[year] = yearly_data_gog.sst.to_series()
+
+# Create the plot for gog
+plt.figure(figsize=(12, 6))
+
+for year, series in sst_gog.items():
+    plt.plot(series.index.month, series.values, label=str(year))
+
+# Adding labels and title
+plt.title('Monthly SST of G.O.G (4N:2E) for the Selected Years')
+plt.xlabel('Month')
+plt.ylabel('SST (Kelvin)')
+plt.legend(title="Year")
+plt.grid(True)
+
+# Show the plot
+plt.show()
