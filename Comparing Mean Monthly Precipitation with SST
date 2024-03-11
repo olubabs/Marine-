@@ -1,0 +1,30 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read the data from the CSV file
+data = pd.read_csv('monthlymean.csv')
+
+# Extract variables
+months = data['Month']
+PRE_WET = data['PRE_WET']
+SST_WET = data['SST_WET']
+
+# Plotting
+fig, ax1 = plt.subplots(figsize=(10, 6))
+
+# Plot PRE_WET on primary y-axis
+ax1.plot(months, PRE_WET, color='blue', marker='o', label='PRE_WET')
+ax1.set_xlabel('Month')
+ax1.set_ylabel('Precipitation Over Wet Years', color='blue')
+ax1.tick_params('y', colors='blue')
+
+# Create a secondary y-axis
+ax2 = ax1.twinx()
+ax2.plot(months, SST_WET, color='red', marker='o', label='SST_WET')
+ax2.set_ylabel('SST Over Wet Years', color='red')
+ax2.tick_params('y', colors='red')
+
+# Add title and legend
+plt.title('Precipitation and SST over West Years')
+fig.tight_layout()
+plt.show()
