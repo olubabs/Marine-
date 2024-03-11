@@ -1,0 +1,25 @@
+import matplotlib.pyplot as plt
+import xarray as xr
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Loading the precipitation data for calculating the annual rainfall anomaly
+data_precipitation = xr.open_dataset('wamonpre.nc')
+
+# Calculating annual sum of precipitation
+annual_precipitation = data_precipitation.pre.groupby('time.year').sum(dim='time')
+
+# Calculating the long-term mean (anomaly baseline)
+long_term_mean = annual_precipitation.mean(dim='year')
+
+# Calculating the anomaly (difference from the long-term mean)
+annual_anomaly = annual_precipitation - long_term_mean
+
+# Plotting the annual rainfall anomaly
+plt.figure(figsize=(12, 6))
+annual_anomaly.mean(dim=['lat', 'lon']).plot()
+plt.title('Annual Rainfall Anomaly')
+plt.xlabel('Year')
+plt.ylabel('Anomaly (mm)')
+plt.grid(True)
+plt.show()
