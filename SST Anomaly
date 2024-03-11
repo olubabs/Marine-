@@ -1,0 +1,25 @@
+import matplotlib.pyplot as plt
+import xarray as xr
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Loading the precipitation data for calculating the annual rainfall anomaly
+data_sst = xr.open_dataset('gog8320.nc')
+
+# Calculating annual sum of SST
+annual_sst = data_sst.sst.groupby('time.year').sum(dim='time')
+
+# Calculating the long-term mean (anomaly baseline)
+long_term_mean = annual_sst.mean(dim='year')
+
+# Calculating the anomaly (difference from the long-term mean)
+annual_anomaly = annual_sst - long_term_mean
+
+# Plotting the annual SST anomaly
+plt.figure(figsize=(12, 6))
+annual_anomaly.mean(dim=['latitude', 'longitude']).plot()
+plt.title('Annual SST Anomaly')
+plt.xlabel('Year')
+plt.ylabel('Anomaly (K)')
+plt.grid(True)
+plt.show()
