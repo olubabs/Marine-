@@ -1,0 +1,34 @@
+import xarray as xr
+import pandas as pd
+import matplotlib.pyplot as plt
+data = xr.open_dataset('drywetmon.nc')
+
+# Displaying the data structure to understand the dataset better
+data_info = data.info()
+data_info
+# Extracting the sea surface data for specific years
+years_of_interest = [1983, 1984, 1987, 1990, 1999, 2003, 2010, 2019]
+sst_data = {}
+for year in years_of_interest:
+    # Extract data for the specific year
+    yearly_data = data.sel(time=data.time.dt.year == year)
+    
+    # Calculate the mean over longitude and latitude to get an average value for each time point
+    monthly_mean = yearly_data.sst.mean(dim=["longitude", "latitude"])
+    
+    # Convert to pandas series for easier plotting
+    sst_data[year] = monthly_mean.to_series()
+# Create the plot
+plt.figure(figsize=(12, 6))
+for year, series in sst_data.items():
+    plt.plot(series.index.month, series.values, label=str(year))
+    
+# Adding labels and title
+plt.title('Monthly SST Over Gulf of Guinea for Selected Years')
+plt.xlabel('Month')
+plt.ylabel('SST (Kelvin)')
+plt.legend(title="Year")
+plt.grid(True)
+
+# Show the plot
+plt.show()
