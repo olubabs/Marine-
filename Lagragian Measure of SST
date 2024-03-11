@@ -1,0 +1,41 @@
+import xarray as xr
+import pandas as pd
+import matplotlib.pyplot as plt
+data = xr.open_dataset('drywetyear.nc')
+
+# Displaying the data structure to understand the dataset better
+data_info = data.info()
+data_info
+# Setting the parameters for the plot
+latitude_target = 2
+longitude_range = range(-9, 9)  # From 9 degrees West to 9 degrees East
+
+#grouping the years
+years_first_group = 1983, 1984, 1987, 1990
+years_second_group = 1999, 2003, 2010, 2019
+
+# Function to calculate average sst for specific years
+def calculate_average_sst(data, years, latitude, longitude_range):
+    return data.sel(time=data.time.dt.year.isin(years), 
+                    latitude=latitude, 
+                    longitude=longitude_range, 
+                    method='nearest').mean(dim='time').sst
+
+# Calculating average sst for the specified years and latitude
+avg_sst_1983_1990 = calculate_average_sst(data, years_first_group, latitude_target, longitude_range)
+avg_sst_1999_2019 = calculate_average_sst(data, years_second_group, latitude_target, longitude_range)
+
+# Plotting the data
+plt.figure(figsize=(12, 6))
+plt.plot(longitude_range, avg_sst_1983_1990, label='Average dry years')
+plt.plot(longitude_range, avg_sst_1999_2019, label='Average wet years')
+
+# Adding labels and title
+plt.title('Average sst at 2° North (dry years vs wet years)')
+plt.xlabel('Longitude')
+plt.ylabel('sst (K)')
+plt.legend()
+plt.grid(True)
+
+# Show the plot
+plt.show()
