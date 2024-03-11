@@ -1,0 +1,23 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read the data from the CSV file
+data = pd.read_csv('monthlymean.csv')
+
+# Extract variables
+months = data['Month']
+SST_DRY = data['SST_DRY']
+SST_WET = data['SST_WET']
+
+# Plotting
+plt.figure(figsize=(10, 6))
+plt.plot(months, SST_DRY, marker='o', label='SST Over Dry Years')
+plt.plot(months, SST_WET, marker='o', label='SST Over Wet Years')
+plt.title('SST Over Dry and Wet Years')
+plt.xlabel('Month')
+plt.ylabel('Temperature (°C)')
+plt.xticks(rotation=45)
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.show()
