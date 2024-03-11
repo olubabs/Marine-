@@ -23,3 +23,33 @@ plt.xlabel('Year')
 plt.ylabel('Anomaly (K)')
 plt.grid(True)
 plt.show()
+
+
+To use Bar Chart
+import matplotlib.pyplot as plt
+import xarray as xr
+import pandas as pd
+
+# Loading the precipitation data for calculating the annual rainfall anomaly
+data_sst = xr.open_dataset('gog8320.nc')
+
+# Calculating annual sum of precipitation
+annual_sst = data_sst.sst.groupby('time.year').sum(dim='time')
+
+# Calculating the long-term mean (anomaly baseline)
+long_term_mean = annual_sst.mean(dim='year')
+
+# Calculating the anomaly (difference from the long-term mean)
+annual_anomaly = annual_sst - long_term_mean
+
+# Convert DataArray to DataFrame for plotting as a bar chart
+df_anomaly = annual_anomaly.mean(dim=['latitude', 'longitude']).to_dataframe()
+
+# Plotting the annual sst anomaly as a bar chart
+plt.figure(figsize=(12, 6))
+df_anomaly['sst'].plot(kind='bar')
+plt.title('Annual SST Anomaly')
+plt.xlabel('Year')
+plt.ylabel('Anomaly (K)')
+plt.grid(True)
+plt.show()
