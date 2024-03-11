@@ -1,0 +1,31 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the CSV file into a pandas DataFrame
+df = pd.read_csv('precipitation.csv')
+
+# Assuming the CSV file has a column named 'Year' and another column named 'Precipitation'
+years = df['Year'].values
+precipitation = df['Precipitation'].values
+
+# Calculate the mean and standard deviation of the precipitation data
+mean_precipitation = np.mean(precipitation)
+std_dev_precipitation = np.std(precipitation)
+
+# Calculate the SPI for each year
+spi_values = (precipitation - mean_precipitation) / std_dev_precipitation
+
+# Define colors based on SPI values (red for negative, blue for positive)
+colors = ['red' if spi < 0 else 'blue' for spi in spi_values]
+
+# Plot the SPI values as a bar plot with colored bars
+plt.figure(figsize=(10, 5))
+plt.bar(years, spi_values, color=colors)
+plt.axhline(0, color='black', linestyle='--', linewidth=1, label='SPI=0')
+plt.xlabel('Year')
+plt.ylabel('SPI Value')
+plt.title('Standardized Precipitation Index of West Africa')
+plt.legend()
+plt.grid(True)
+plt.show()
